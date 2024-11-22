@@ -12,6 +12,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// SignUpUser handles the user registration process.
+// It parses the request body to get the user input, validates it, hashes the password,
+// and creates a new user in the database. It returns appropriate responses based on the outcome.
 func SignUpUser(c *fiber.Ctx) error {
 	var payload *models.SignUpInput
 
@@ -54,6 +57,9 @@ func SignUpUser(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "data": fiber.Map{"user": models.FilterUserRecord(&newUser)}})
 }
 
+// SignInUser handles the user login process.
+// It parses the request body to get the user input, validates it, checks the credentials,
+// generates a JWT token, and sets it as a cookie. It returns appropriate responses based on the outcome.
 func SignInUser(c *fiber.Ctx) error {
 	var payload *models.SignInInput
 
@@ -109,6 +115,8 @@ func SignInUser(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "token": tokenString})
 }
 
+// LogoutUser handles the user logout process.
+// It sets the JWT token cookie to expire immediately, effectively logging the user out.
 func LogoutUser(c *fiber.Ctx) error {
 	expired := time.Now().Add(-time.Hour * 24)
 	c.Cookie(&fiber.Cookie{
@@ -118,4 +126,3 @@ func LogoutUser(c *fiber.Ctx) error {
 	})
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success"})
 }
-

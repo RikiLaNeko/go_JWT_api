@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// User represents a user in the system.
 type User struct {
 	ID        *uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primary_key"`
 	Name      string     `gorm:"type:varchar(100);not null"`
@@ -20,6 +21,7 @@ type User struct {
 	UpdatedAt *time.Time `gorm:"not null;default:now()"`
 }
 
+// SignUpInput represents the input data for user registration.
 type SignUpInput struct {
 	Name            string `json:"name" validate:"required"`
 	Email           string `json:"email" validate:"required"`
@@ -28,11 +30,13 @@ type SignUpInput struct {
 	Photo           string `json:"photo"`
 }
 
+// SignInInput represents the input data for user login.
 type SignInInput struct {
 	Email    string `json:"email"  validate:"required"`
 	Password string `json:"password"  validate:"required"`
 }
 
+// UserResponse represents the response data for a user.
 type UserResponse struct {
 	ID        uuid.UUID `json:"id,omitempty"`
 	Name      string    `json:"name,omitempty"`
@@ -44,6 +48,7 @@ type UserResponse struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+// FilterUserRecord filters the user record to return a UserResponse.
 func FilterUserRecord(user *User) UserResponse {
 	return UserResponse{
 		ID:        *user.ID,
@@ -59,12 +64,14 @@ func FilterUserRecord(user *User) UserResponse {
 
 var validate = validator.New()
 
+// ErrorResponse represents the error response for validation errors.
 type ErrorResponse struct {
 	Field string `json:"field"`
 	Tag   string `json:"tag"`
 	Value string `json:"value,omitempty"`
 }
 
+// ValidateStruct validates the given payload and returns a list of validation errors.
 func ValidateStruct[T any](payload T) []*ErrorResponse {
 	var errors []*ErrorResponse
 	err := validate.Struct(payload)
@@ -79,4 +86,3 @@ func ValidateStruct[T any](payload T) []*ErrorResponse {
 	}
 	return errors
 }
-

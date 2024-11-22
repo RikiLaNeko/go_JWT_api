@@ -10,6 +10,9 @@ import (
 	"github.com/wpcodevo/go-postgres-jwt-auth-api/models"
 )
 
+// DeserializeUser is a middleware function that deserializes the user from the JWT token.
+// It checks the Authorization header or the token cookie for a valid JWT token.
+// If the token is valid, it retrieves the user from the database and stores the user information in the context.
 func DeserializeUser(c *fiber.Ctx) error {
 	var tokenString string
 	authorization := c.Get("Authorization")
@@ -55,6 +58,9 @@ func DeserializeUser(c *fiber.Ctx) error {
 	return c.Next()
 }
 
+// allowedRoles is a middleware function that restricts access to routes based on user roles.
+// It checks if the authenticated user's role is in the list of allowed roles.
+// If the user's role is not allowed, it returns a 403 Forbidden response.
 func allowedRoles(allowedRoles []string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		user, ok := c.Locals("user").(models.UserResponse)
